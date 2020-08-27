@@ -139,7 +139,7 @@ class Application {
 			.add("https://stefanweck.nl/codepen/shine.png")
 			.add("bg", "./assets/images/bg3.jpeg")
 			.add("fg", "./assets/images/fg3.jpeg")
-			.add("rain", "./assets/audio/rain.wav")
+			//.add("rain", "./assets/audio/rain.wav")
 			.load(() => this.initialize());
 	}
 
@@ -154,8 +154,19 @@ class Application {
 		this.stats.domElement.style.left = "0px";
 		this.stats.domElement.style.top = "0px";
 		this.stats.domElement.style.zIndex = "9000";
+
+		this.ambient = new Howl({
+			src: ["./assets/audio/rain.mp3"],
+			autoplay: true,
+			loop: true,
+			volume: 0.5,
+			onend: function() {
+				console.log("Finished!");
+			}
+		});
+		this.ambient.play();
 		//document.body.appendChild(this.stats.domElement);
-		this.ambient = this.loader.resources["rain"].sound;
+		//this.ambient = this.loader.resources["rain"].sound;
 		//this.ambient = PIXI.Sound.from("./assets/images/rain.wav");
 
 		//this.ambient.data.play();
