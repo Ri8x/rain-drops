@@ -134,13 +134,27 @@ class Application {
 		this.height = window.innerHeight;
 
 		// Define the assets that PIXI needs to preload to use later in the application
+
 		this.loader = PIXI.loader
 			.add("https://stefanweck.nl/codepen/alpha.png")
 			.add("https://stefanweck.nl/codepen/shine.png")
 			.add("bg", "./assets/images/bg3.jpeg")
-			.add("fg", "./assets/images/fg3.jpeg")
-			//.add("rain", "./assets/audio/rain.wav")
-			.load(() => this.initialize());
+			.add("fg", "./assets/images/fg3.jpeg");
+
+		this.ambient = new Howl({
+			src: ["./assets/audio/rain.mp3"],
+			autoplay: true,
+			loop: true,
+			volume: 0.5,
+			onload: () => {
+				this.loader.load(() => this.initialize());
+			},
+			onplayerror: function() {
+				this.ambient.once("unlock", function() {
+					this.ambient.play();
+				});
+			}
+		});
 	}
 
 	/**
@@ -155,21 +169,8 @@ class Application {
 		this.stats.domElement.style.top = "0px";
 		this.stats.domElement.style.zIndex = "9000";
 
-		this.ambient = new Howl({
-			src: ["./assets/audio/rain.mp3"],
-			autoplay: true,
-			loop: true,
-			volume: 0.5,
-			onend: function() {
-				console.log("Finished!");
-			}
-		});
 		this.ambient.play();
 		//document.body.appendChild(this.stats.domElement);
-		//this.ambient = this.loader.resources["rain"].sound;
-		//this.ambient = PIXI.Sound.from("./assets/images/rain.wav");
-
-		//this.ambient.data.play();
 
 		// Create a new instance of the EffectCanvas which is going to produce all of the visuals
 		this.effectCanvas = new EffectCanvas(this.width, this.height, this.loader);
